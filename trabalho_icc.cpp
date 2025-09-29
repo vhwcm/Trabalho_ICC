@@ -272,7 +272,7 @@ void get_input()
     while (!finish_game)
     {
         this_thread::sleep_for(chrono::milliseconds(500));
-        while (!data_ready)
+        if (!data_ready && !finish_game)
         {
             cin >> commands;
             if (cin.fail())
@@ -322,6 +322,14 @@ int main()
                 cout << "Comando invalido!" << endl;
             }
         }
+    }
+
+    // Properly join threads before ending
+    if (input_thread.joinable()) {
+        input_thread.join();
+    }
+    if (temp.joinable()) {
+        temp.join();
     }
 
     // show if win or lose
@@ -394,7 +402,11 @@ void write_map()
                         cout << endl;
                     }
                     cout << endl;
-                    percent = women * 100 / (women + men);
+                    if (women + men > 0) {
+                        percent = women * 100 / (women + men);
+                    } else {
+                        percent = 0;
+                    }
                     cout << "Mulheres nas areas de exatas: " << percent << "%" << endl;
                     cout << "Dinheiro disponivel: " << money << "MI" << endl;
                     cout << "Renda: " << rent << "MI" << endl
@@ -587,11 +599,21 @@ void show_news()
         cout << "\033[30m\033[43mLEIA A ÚLTIMA NOTÍCIA DO MOMENTO:\033[0;0m" << endl
              << endl;
         cout << "\033[30m\033[47m";
-        for (int c = 0; c < news[last_investment.back().first][last_investment.back().second].size(); c++)
-        {
-            if (c % 100 == 0)
-                cout << endl;
-            cout << news[last_investment.back().first][last_investment.back().second][c];
+        
+        // Verify bounds before accessing the vector
+        if (!last_investment.empty()) {
+            int row = last_investment.back().first;
+            int col = last_investment.back().second;
+            
+            // Check bounds for news array
+            if (row >= 0 && row < 7 && col >= 0 && col < 3) {
+                for (int c = 0; c < news[row][col].size(); c++)
+                {
+                    if (c % 100 == 0)
+                        cout << endl;
+                    cout << news[row][col][c];
+                }
+            }
         }
 
         cout
@@ -616,7 +638,9 @@ void show_news()
                 commands = -1;
             }
         }
-        last_investment.pop_back();
+        if (!last_investment.empty()) {
+            last_investment.pop_back();
+        }
     }
     data_ready = false;
 }
