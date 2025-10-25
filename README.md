@@ -13,4 +13,4 @@ make trabalho_icc
 
 É possível que seja necessário alterar o zoom do terminal para ver a tela do jogo completo
 
-[Gravação de tela de 2025-09-29 14-40-26.webm](https://github.com/user-attachments/assets/e482a350-92d5-46ef-863d-5a66cd8b48d7)
+[Vídeo Demo](https://github.com/user-attachments/assets/e482a350-92d5-46ef-863d-5a66cd8b48d7)
